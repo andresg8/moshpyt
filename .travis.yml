@@ -78,6 +78,9 @@ install:
 - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then python -m pip install pip==19.0.1 ; fi
 - which pip
 - pip --version
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo pip install -r requirements.pip  ; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo pip install -r requirements.pip  ; fi
+- if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then python -m pip install -r requirements.pip ; fi
 
 
 #*******************************************************************************
