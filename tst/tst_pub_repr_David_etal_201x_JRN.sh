@@ -105,6 +105,38 @@ fi
 
 
 #*******************************************************************************
+#Angles conversion: radians to degrees
+#*******************************************************************************
+unt=$((unt+1))
+if [ "$unt" -ge "$fst" ] && [ "$unt" -le "$lst" ] ; then
+echo "Running unit test $unt/x"
+run_file=tmp_run_$unt.txt
+cmp_file=tmp_cmp_$unt.txt
+
+echo "- Angles conversion: radians to degrees"
+../src/msh_ang_rad_deg.py                                                      \
+     ../output/Basic_JRN/angles_Basic_radians.csv                              \
+     ../output/Basic_JRN/angles_Basic_degrees_tst.csv                          \
+     > $run_file
+x=$? && if [ $x -gt 0 ] ; then echo "Failed run: $run_file" >&2 ; exit $x ; fi
+
+echo "- Comparing CSV files"
+./tst_cmp_csv.py                                                               \
+     ../input/Basic_JRN/angles_Basic_degrees.csv                               \
+     ../output/Basic_JRN/angles_Basic_degrees_tst.csv                          \
+     1e-9                                                                      \
+     1e-6                                                                      \
+     > $cmp_file
+x=$? && if [ $x -gt 0 ] ; then echo "Failed comparison: $cmp_file" >&2 ; exit $x ; fi
+
+rm -f $run_file
+rm -f $cmp_file
+echo "Success"
+echo "********************"
+fi
+
+
+#*******************************************************************************
 #Clean up
 #*******************************************************************************
 rm -f ../output/Basic_JRN/*_tst.*
