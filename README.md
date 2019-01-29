@@ -13,6 +13,7 @@ MOSHPyT currently uses the following Hosted Continuous Integration services and
 Operating Systems:
 - Travis CI (Ubuntu 14)
 - Travis CI (MacOS)
+- Travis CI (Windows)
 
 MOSHPyT also creates and tests a Debian-based image for the following container
 platform:
