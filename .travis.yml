@@ -1,0 +1,93 @@
+#*******************************************************************************
+#.travis.yml
+#*******************************************************************************
+
+#Purpose:
+#Travis CI is a hosted continuous integration service, that is, it allows 
+#running code directly from a repository and checking that the code acts as 
+#expected. The purpose of the .travis.yml file is to give instructions to Travis 
+#CI on how to do the work.
+#Author:
+#Cedric H. David, 2019-2019
+
+
+#*******************************************************************************
+#System specifications for Travis CI
+#*******************************************************************************
+matrix:
+  include:
+    - os: linux
+      language: generic
+      sudo: required
+    - os: osx
+      language: generic
+    - os: windows
+      language: shell
+
+
+#*******************************************************************************
+#Environment variables for different tests on multiple Travis CI workers
+#*******************************************************************************
+env:
+- TST_PUB_DWNL='./tst_pub_dwnl_David_etal_201x_JRN.sh' TST_PUB_REPR='./tst_pub_repr_David_etal_201x_JRN.sh'
+
+
+#*******************************************************************************
+#Before installing SHBAAM
+#*******************************************************************************
+before_install:
+
+#-------------------------------------------------------------------------------
+#Specific to Linux
+#-------------------------------------------------------------------------------
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt-get --version             ; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y $(grep -v -E '(^#|^$)' requirements.apt) ; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo pip install pip==19.0.1  ; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt list --installed          ; fi
+
+#-------------------------------------------------------------------------------
+#Specific to OSX
+#-------------------------------------------------------------------------------
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew --version                  ; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew reinstall $(grep -v -E '(^#|^$)' requirements.brw) ; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo pip install pip==19.0.1  ; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list                       ; fi
+
+#-------------------------------------------------------------------------------
+#Specific to Windows
+#-------------------------------------------------------------------------------
+- if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco info choco            ; fi
+- if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then powershell "choco install --no-progress ((gc requirements.cho) -notmatch '^#' -match '\S')" ; fi
+- if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="C:\\Python27\\:C:\\Python27\\Scripts\\:$PATH" ; fi
+- if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then python -m pip install pip==19.0.1 ; fi
+- if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco list --local-only     ; fi
+
+#-------------------------------------------------------------------------------
+#Checking environment details (OS-agnostic)
+#-------------------------------------------------------------------------------
+- echo $TRAVIS_OS_NAME
+- which python
+- python --version
+- which pip
+- pip --version
+
+
+#*******************************************************************************
+#Installing SHBAAM
+#*******************************************************************************
+install:
+- echo "Nothing to install"
+
+
+#*******************************************************************************
+#Testing SHBAAM
+#*******************************************************************************
+script:
+- cd ./tst/
+- echo $TST_PUB_DWNL && $TST_PUB_DWNL
+- echo $TST_PUB_REPR && $TST_PUB_REPR
+
+
+#*******************************************************************************
+#End
+#*******************************************************************************
