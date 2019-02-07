@@ -48,7 +48,7 @@ RUN  apt-get update && \
 #Python requirements
 #*******************************************************************************
 ADD https://bootstrap.pypa.io/get-pip.py .
-RUN python get-pip.py pip==19.0.1 --no-cache-dir && \
+RUN python get-pip.py `grep 'pip==' requirements.pip` --no-cache-dir && \
     rm get-pip.py
 
 RUN pip install --no-cache-dir -r requirements.pip
